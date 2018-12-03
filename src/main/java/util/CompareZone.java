@@ -33,7 +33,7 @@ public class CompareZone {
 
 	int[][][] findImgData; // 查找结果，目标图标位于屏幕截图上的坐标数据
 
-	public boolean CompareZone(String keyImagePath) {
+	public boolean toCompareZone(String keyImagePath) {
 		screenShotImage = this.getFullScreenShot();
 		keyImage = this.getBfImageFromPath(keyImagePath);
 		screenShotImageRGBData = this.getImageGRB(screenShotImage);
@@ -59,7 +59,7 @@ public class CompareZone {
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		try {
 			Robot robot = new Robot();
-			bfImage = robot.createScreenCapture(new Rectangle(0, 0, 800, 800));
+			bfImage = robot.createScreenCapture(new Rectangle(0, 0, 628, 440));
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
@@ -110,7 +110,7 @@ public class CompareZone {
 	public boolean findImage() {
 		findImgData = new int[keyImgHeight][keyImgWidth][2];
 		// 遍历屏幕截图像素点数据
-		boolean result=false;
+		boolean result = false;
 		for (int y = 0; y < scrShotImgHeight - keyImgHeight; y++) {
 			for (int x = 0; x < scrShotImgWidth - keyImgWidth; x++) {
 				// 根据目标图的尺寸，得到目标图四个角映射到屏幕截图上的四个点，
@@ -126,14 +126,12 @@ public class CompareZone {
 					boolean isFinded = isMatchAll(y, x);
 					// 如果比较结果完全相同，则说明图片找到，填充查找到的位置坐标数据到查找结果数组。
 					if (isFinded) {
-						/*for (int h = 0; h < keyImgHeight; h++) {
-							for (int w = 0; w < keyImgWidth; w++) {
-								findImgData[h][w][0] = y + h;
-								findImgData[h][w][1] = x + w;
-							}
-						}
-						return;*/
-						result=true;
+						/*
+						 * for (int h = 0; h < keyImgHeight; h++) { for (int w =
+						 * 0; w < keyImgWidth; w++) { findImgData[h][w][0] = y +
+						 * h; findImgData[h][w][1] = x + w; } } return;
+						 */
+						result = true;
 					}
 				}
 			}
@@ -154,38 +152,49 @@ public class CompareZone {
 		int biggerY = 0;
 		int biggerX = 0;
 		int xor = 0;
+		int total = 0;
+		int score = 0;
 		for (int smallerY = 0; smallerY < keyImgHeight; smallerY++) {
 			biggerY = y + smallerY;
 			for (int smallerX = 0; smallerX < keyImgWidth; smallerX++) {
+				total = total + 1;
 				biggerX = x + smallerX;
 				if (biggerY >= scrShotImgHeight || biggerX >= scrShotImgWidth) {
 					return false;
 				}
 				xor = keyImageRGBData[smallerY][smallerX] ^ screenShotImageRGBData[biggerY][biggerX];
 				if (xor != 0) {
-					return false;
+					// return false;
+				} else {
+					score = score + 1;
 				}
 			}
 			biggerX = x;
 		}
-		return true;
+		if (total != 0) {
+			if (total / (total - score) < 10) {
+				return true;
+			} else {
+				return false;
+			}
+		}else{
+			return false;
+		}
 	}
 
 	/**
 	 * 输出查找到的坐标数据
 	 */
-	/*private void printFindData() {
-		for (int y = 0; y < keyImgHeight; y++) {
-			for (int x = 0; x < keyImgWidth; x++) {
-				System.out.print("(" + this.findImgData[y][x][0] + ", " + this.findImgData[y][x][1] + ")");
-			}
-			System.out.println();
-		}
-	}*/
+	/*
+	 * private void printFindData() { for (int y = 0; y < keyImgHeight; y++) {
+	 * for (int x = 0; x < keyImgWidth; x++) { System.out.print("(" +
+	 * this.findImgData[y][x][0] + ", " + this.findImgData[y][x][1] + ")"); }
+	 * System.out.println(); } }
+	 */
 
 	public static void main(String[] args) {
 		String keyImagePath = "D:/key.png";
-		//CompareZone demo = new CompareZone(keyImagePath);
-		//demo.printFindData();
+		// CompareZone demo = new CompareZone(keyImagePath);
+		// demo.printFindData();
 	}
 }
