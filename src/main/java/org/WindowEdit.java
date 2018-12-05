@@ -16,9 +16,9 @@ public class WindowEdit {
 
 //        HWND hwnd = User32.INSTANCE.FindWindow
 //                (null, "TIM"); // 第一个参数是Windows窗体的窗体类，第二个参数是窗体的标题。不熟悉windows编程的需要先找一些Windows窗体数据结构的知识来看看，还有windows消息循环处理，其他的东西不用看太多。
-    	WinDef.HWND hwnd = com.sun.jna.platform.win32.User32.INSTANCE.FindWindow(null,"Postman");       
+    	WinDef.HWND hwnd = com.sun.jna.platform.win32.User32.INSTANCE.FindWindow(null,"夜神模拟器");
     	if (hwnd == null) {
-            System.out.println("QQ is not running");
+            System.out.println("夜神模拟器 is not running");
         }
         else{
             User32.INSTANCE.ShowWindow(hwnd, 9 );        // SW_RESTORE
